@@ -1,0 +1,15 @@
+### Post request to create a new patient record
+
+POST http://localhost:4000/patients
+Content-Type: application/json
+
+{
+  "name": "Manoj VD",
+  "email": "mANOJ123@gmail.com",
+  "address": "INDIRANAGAR Bangalore, INDIA",
+  "dateOfBirth": "1999-11-01",
+  "registeredDate": "2024-06-15"
+}
+
+
+###
