@@ -10,7 +10,7 @@ import com.pm.patientservice.mapper.PatientMapper;
 import com.pm.patientservice.model.Patient;
 import com.pm.patientservice.repository.PatientRepository;
 import org.springframework.stereotype.Service;
-
+import com.pm.patientservice.kafka.KafkaProducer;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,9 +18,13 @@ import java.util.UUID;
 public class PatientService {
     private PatientRepository patientRepository;
     private final BillingServiceGrpcClient billingServiceGrpcClient;
-    public PatientService(PatientRepository patientRepository, BillingServiceGrpcClient billingServiceGrpcClient) {
+    private final KafkaProducer kafkaProducer;
+    public PatientService(PatientRepository patientRepository,
+                          BillingServiceGrpcClient billingServiceGrpcClient,
+                          KafkaProducer kafkaProducer) {
         this.patientRepository = patientRepository;
         this.billingServiceGrpcClient =  billingServiceGrpcClient;
+        this.kafkaProducer = kafkaProducer;
     }
 
     public List<PatientResponseDTO> getPatients() {
@@ -43,6 +47,9 @@ public class PatientService {
                 newPatient.getName(),
                 newPatient.getEmail()
         );
+
+        kafkaProducer.sendEvent(newPatient);
+
         return PatientMapper.toDTO(newPatient);
     }
 
